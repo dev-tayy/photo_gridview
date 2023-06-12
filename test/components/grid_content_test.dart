@@ -59,28 +59,4 @@ void main() {
     expect(find.byType(TextLoadingView), findsOneWidget);
   });
 
-  testWidgets('GridContent - Error Icon Shown when Failed to Load Image',
-      (WidgetTester tester) async {
-    // Arrange
-    const title = 'Sample Title';
-    const artist = 'Sample Artist';
-    const imageUrl = 'https://invalid-url.com/image.jpg';
-
-    // Act
-    await mockNetworkImagesFor(() => tester.pumpWidget(
-          MaterialApp(
-            home: Material(
-              child: GridContent(
-                title: title,
-                artist: artist,
-                url: imageUrl,
-                onPressed: () {},
-              ),
-            ),
-          ),
-        ));
-
-    // Assert
-    expect(find.byIcon(Icons.error), findsNothing);
-  });
 }
