@@ -17,19 +17,20 @@ class MyHomePage extends HookWidget {
     final photos = useState(getPhotos);
     final lastPage = useState(1000);
     final currentPage = useState(1);
-    final isLoading = useState(getPhotos.isEmpty);
-    final isOnStart = useState(true);
+    final isLoading = useState(photos.value.isEmpty);
+    final isOnStart = useState(isLoading.value);
     final scrollController = useScrollController();
 
-    //fetch and cache photos on initializing of widget
+    //fetch and cache photos on initialization of widget
     useMemoized(() {
       if (photos.value.isEmpty) {
+        isLoading.value = true;
         photoBloc
             .add(FetchAllPhotosEvent(page: currentPage.value, perPage: 10));
       }
     }, []);
 
-    //infinity scroll pagination implemenetation
+    //infinity scroll pagination implementation
     useEffect(() {
       scrollController.addListener(() {
         if (lastPage.value != currentPage.value) {
