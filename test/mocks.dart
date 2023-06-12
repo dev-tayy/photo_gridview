@@ -30,33 +30,4 @@ class MockDio extends Mock implements Dio {
   late BaseOptions options;
 }
 
-class MockApiClient extends Mock implements ApiClient {
-  MockApiClient() {
-    // const url = '/test';
-    // final data = {'key': 'value'};
-    // final responseData = {'data': 'response'};
-    // final response = Response(
-    //   data: responseData,
-    //   statusCode: 200,
-    //   requestOptions: RequestOptions(path: url),
-    // );
-
-    // when(() => dio.post(any(), data: any(named: 'data')))
-    //     .thenAnswer((i) async => Future.value(response));
-
-    // when(() => dio.delete(url, data: data))
-    //     .thenAnswer((i) async => Future.value(response));
-
-    // when(() => dio.patch(url, data: data))
-    //     .thenAnswer((i) async => Future.value(response));
-
-    // when(
-    //   () => dio.get(
-    //     url,
-    //     queryParameters: data,
-    //   ),
-    // ).thenAnswer((i) async => Future.value(response));
-
-    // when(() => setHeader(any(), any())).thenReturn(null);
-  }
-}
+class MockApiClient extends Mock implements ApiClient {}
