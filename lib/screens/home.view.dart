@@ -17,8 +17,19 @@ class MyHomePage extends HookWidget {
     final photos = useState(getPhotos);
     final lastPage = useState(1000);
     final currentPage = useState(1);
+    final isLoading = useState(getPhotos.isEmpty);
+    final isOnStart = useState(true);
     final scrollController = useScrollController();
 
+    //fetch and cache photos on initializing of widget
+    useMemoized(() {
+      if (photos.value.isEmpty) {
+        photoBloc
+            .add(FetchAllPhotosEvent(page: currentPage.value, perPage: 10));
+      }
+    }, []);
+
+    //infinity scroll pagination implemenetation
     useEffect(() {
       scrollController.addListener(() {
         if (lastPage.value != currentPage.value) {
@@ -43,9 +54,11 @@ class MyHomePage extends HookWidget {
                 bloc: photoBloc,
                 listener: (context, state) {
                   if (state is FetchAllPhotosLoading) {
-                    toast('Please wait...');
+                    isLoading.value = true;
+                    if (!isOnStart.value) toast('Please wait...');
                   }
                   if (state is FetchAllPhotosSuccess) {
+                    isOnStart.value = false;
                     photos.value.addAll(state.photos);
                     lastPage.value = state.lastPage;
                   }
@@ -84,33 +97,40 @@ class MyHomePage extends HookWidget {
                     ),
                     const SizedBox(height: 30),
                     Expanded(
-                      child: GridView.builder(
-                        controller: scrollController,
-                        itemCount: photos.value.length,
-                        shrinkWrap: true,
-                        padding: const EdgeInsets.only(bottom: 10),
-                        physics: const BouncingScrollPhysics(),
-                        gridDelegate:
-                            const SliverGridDelegateWithMaxCrossAxisExtent(
-                          maxCrossAxisExtent: 200,
-                          childAspectRatio: 3 / 4.2,
-                          crossAxisSpacing: 20,
-                          mainAxisSpacing: 10,
+                      child: Visibility(
+                        visible: !(isLoading.value && isOnStart.value),
+                        replacement: Transform.scale(
+                          scale: 0.6,
+                          child: const TextLoadingView(),
                         ),
-                        itemBuilder: (context, index) {
-                          final photo = photos.value[index];
-                          return GridContent(
-                            title: photo.altDescription!,
-                            url: photo.urls!.regular!,
-                            artist: photo.user!.firstName!,
-                            onPressed: () {
-                              Navigator.push(context,
-                                  MaterialPageRoute(builder: (context) {
-                                return PhotoView(photo: photo);
-                              }));
-                            },
-                          );
-                        },
+                        child: GridView.builder(
+                          controller: scrollController,
+                          itemCount: photos.value.length,
+                          shrinkWrap: true,
+                          padding: const EdgeInsets.only(bottom: 10),
+                          physics: const BouncingScrollPhysics(),
+                          gridDelegate:
+                              const SliverGridDelegateWithMaxCrossAxisExtent(
+                            maxCrossAxisExtent: 200,
+                            childAspectRatio: 3 / 4.2,
+                            crossAxisSpacing: 20,
+                            mainAxisSpacing: 10,
+                          ),
+                          itemBuilder: (context, index) {
+                            final photo = photos.value[index];
+                            return GridContent(
+                              title: photo.altDescription ?? '',
+                              url: photo.urls!.regular!,
+                              artist: photo.user!.firstName!,
+                              onPressed: () {
+                                Navigator.push(context,
+                                    MaterialPageRoute(builder: (context) {
+                                  return PhotoView(photo: photo);
+                                }));
+                              },
+                            );
+                          },
+                        ),
                       ),
                     )
                   ],

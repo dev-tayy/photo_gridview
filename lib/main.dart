@@ -8,7 +8,6 @@ import 'package:photo_view/screens/home.view.dart';
 import 'package:photo_view/utils/utils.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
   await AppManager.initializeDependencies();
   await getIt.allReady();
   Bloc.observer = AppBlocObserver();
@@ -26,6 +25,7 @@ class MyApp extends StatelessWidget {
         create: (context) => PhotoBloc(getIt.get<PhotoRepository>()),
         child: MaterialApp(
           title: 'Photo Gallery',
+          debugShowCheckedModeBanner: false,
           theme: ThemeData(
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
             useMaterial3: true,

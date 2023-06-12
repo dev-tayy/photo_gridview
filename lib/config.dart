@@ -1,7 +1,13 @@
 class Config {
-  static const String baseUrl = String.fromEnvironment('config.baseurl',
-      defaultValue: 'https://api.unsplash.com');
+  static const String baseUrl = String.fromEnvironment('BASE_URL');
+  static const String clientId = String.fromEnvironment('ACCESS_TOKEN');
 
-  static const String clientId = String.fromEnvironment('config.clientId',
-      defaultValue: 'O2qIzmt3l9PFFn713Op2sdE2ghpoAR6glMatK24Sc0o');
+  Config() {
+    if (baseUrl.isEmpty) {
+      throw AssertionError('BASE_URL is not set');
+    }
+    if (clientId.isEmpty) {
+      throw AssertionError('ACCESS_TOKEN is not set');
+    }
+  }
 }

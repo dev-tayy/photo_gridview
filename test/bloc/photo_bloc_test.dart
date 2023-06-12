@@ -37,7 +37,7 @@ void main() {
       act: (bloc) => bloc.add(FetchAllPhotosEvent(page: 1, perPage: 10)),
       expect: () => [
         FetchAllPhotosLoading(),
-        FetchAllPhotosSuccess(photos: [], lastPage: 1),
+        FetchAllPhotosSuccess(photos: const [], lastPage: 1),
       ],
     );
 
